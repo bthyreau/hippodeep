@@ -13,7 +13,7 @@ It uses NVIDIA's CuDNN library through Theano/Lasagne.
 
 The FSL tools are also required
 
-Optionally, the ANTs warping tools can be used if installed for speed boost.
+Optionally, the ANTs warping tools can be used as alternative to the FSL-flirt call.
 
 Tested on Linux CentOS 6.8
 
@@ -33,9 +33,11 @@ The simplest way to install the rest from scratch is to use a Anaconda environme
 
 ##Usage:
 To use the program, simply
-Using only FSL tools `deepseg3.sh example_brain_t1.nii.gz`, or Using ANTs tools: `deepseg2.sh example_brain_t1.nii.gz`
-(The script can be called with its full path, but the image file must be in current, writtable, directory)
+Using only FSL tools `deepseg3.sh example_brain_t1.nii.gz`, or Using ANTs tools: `deepseg2.sh example_brain_t1.nii.gz`. The script can be called with its full path, but the image file must be in current, writable, directory.
 
 The resulting segmentation should be stored as `example_brain_t1_mask_L.nii.gz` (or R for right).
 
 The volumes values are stored in `example_brain_t1_hippo_vol_LR.txt`
+
+Due to Theano CUDA compilation, the first run of the program may take a long time (up to several minutes, depending on your CUDA architecture)
+
