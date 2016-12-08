@@ -150,11 +150,6 @@ if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
 
 
     # Definition of the network
-
-    pool_size = 2
-    pad_in = 'same'
-    pad_out = 'same'
-
     conv_num_filters = 48
     l = InputLayer(shape = (None, 1, 48, 72, 64), name="input")
     l_input = l
@@ -171,7 +166,7 @@ if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
     l = l_maxpool1 = MaxPool3DDNNLayer(l, pool_size = 2, name ='maxpool1')
     l = BatchNormLayer(l, name="batchnorm")
 
-    l = Conv3DDNNLayer(l, num_filters = conv_num_filters, filter_size = (3,3,3), pad = pad_in, name="conv")
+    l = Conv3DDNNLayer(l, num_filters = conv_num_filters, filter_size = (3,3,3), pad = "same", name="conv")
     l = l_convout1 = Conv3DDNNLayer(l, num_filters = conv_num_filters, filter_size = (3, 3, 3), pad = 'same', name ='convout1', nonlinearity = None)
     l = ElemwiseSumLayer(incomings = [l_maxpool1, l_convout1], name="sum_1s")
     l = NonlinearityLayer(l, nonlinearity = rectify, name="relu")
@@ -181,7 +176,7 @@ if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
     l = l_maxpool2 = MaxPool3DDNNLayer(l, pool_size = 2, name = 'maxpool2')
     l_maxpool2_conv = l
     l = BatchNormLayer(l, name="batchnorm")
-    l = Conv3DDNNLayer(l, num_filters = conv_num_filters2, filter_size = (3,3,3), pad = pad_in, name="conv")
+    l = Conv3DDNNLayer(l, num_filters = conv_num_filters2, filter_size = (3,3,3), pad = "same", name="conv")
     l = l_convout2 = Conv3DDNNLayer(l, num_filters = conv_num_filters2, filter_size = (3, 3, 3), pad = 'same', name ='convout2', nonlinearity = None)
     l = ElemwiseSumLayer(incomings = [l_maxpool2_conv, l_convout2], name="sum_2s")
     l = NonlinearityLayer(l, nonlinearity = rectify, name="relu")
@@ -226,7 +221,7 @@ if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
     with np.load(scriptpath + "/modelparams.npz") as f:
         param_values = [f['arr_%d' % i] for i in range(len(f.files))]
         lasagne.layers.set_all_param_values(network, param_values)
-    print ("weight loaded on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
+    print ("weights loaded on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
 
     fn_get_output = theano.function([l_input.input_var], get_output(l_out, deterministic=True))
     import theano.misc.pkl_utils
@@ -235,7 +230,7 @@ if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
 
 elif os.path.exists(pickle_cache_path + "/output_func.pkl"):
     fn_get_output = cPickle.load(open(pickle_cache_path + "/output_func.pkl"))
-    print ("weight and functions loaded from cache on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
+    print ("weights and functions loaded from cache on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
 
 
 
@@ -247,6 +242,7 @@ if 1:
     d = img.get_data().astype(np.float32)
     d -= d.mean()
     d /= d.std()
+    # split Left and Right (flipping Right)
     d_in = np.vstack([d[None, None, 6: 54:+1,: ,2:-2 ], d[None, None,-7:-55:-1,: ,2:-2 ]])
     out= fn_get_output(d_in)
 
