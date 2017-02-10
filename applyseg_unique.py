@@ -8,7 +8,7 @@ from lasagne.nonlinearities import rectify, leaky_rectify
 from lasagne.updates import nesterov_momentum, rmsprop, adamax
 
 import sys, os, time
-scriptpath = os.path.dirname(sys.argv[0])
+scriptpath = os.path.dirname(__file__)
 
 import nibabel
 import numpy as np
@@ -26,11 +26,12 @@ from lasagne.utils import as_tuple
 
 import cPickle
 
-fn = sys.argv[1]
-
 # In production, most of the network definition below is instead loaded from a pickled cache
-pickle_cache_path = scriptpath
-if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
+pickle_cache_path = os.path.join(os.environ["HOME"], ".hippodeep")
+if not os.path.exists(os.path.join(pickle_cache_path, "output_func.pkl")):
+
+    if not os.path.exists(pickle_cache_path):
+        os.mkdir(pickle_cache_path)
 
     class Upscale3DLayer(Layer):
         def __init__(self, incoming, scale_factor, **kwargs):
@@ -218,7 +219,7 @@ if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
 
     print ("model defined ")
 
-    with np.load(scriptpath + "/modelparams.npz") as f:
+    with np.load(os.path.join(scriptpath, "modelparams.npz")) as f:
         param_values = [f['arr_%d' % i] for i in range(len(f.files))]
         lasagne.layers.set_all_param_values(network, param_values)
     print ("weights loaded on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
@@ -226,43 +227,42 @@ if not os.path.exists(pickle_cache_path + "/output_func.pkl"):
     fn_get_output = theano.function([l_input.input_var], get_output(l_out, deterministic=True))
     import theano.misc.pkl_utils
     print ("Saving function to cache")
-    cPickle.dump(fn_get_output, open(pickle_cache_path + "/output_func.pkl", "wb"))
+    cPickle.dump(fn_get_output, open(os.path.join(pickle_cache_path, "output_func.pkl"), "wb"))
 
-elif os.path.exists(pickle_cache_path + "/output_func.pkl"):
-    fn_get_output = cPickle.load(open(pickle_cache_path + "/output_func.pkl"))
-    print ("weights and functions loaded from cache on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
-
-
+else:
+    fn_get_output = cPickle.load(open(os.path.join(pickle_cache_path, "output_func.pkl")))
+    print ("weights and functions loaded from cache")
 
 
 
-if 1:
-    print ("Running %s" % (fn))
-    img = nibabel.load(fn)
-    d = img.get_data().astype(np.float32)
-    d -= d.mean()
-    d /= d.std()
-    # split Left and Right (flipping Right)
-    d_in = np.vstack([d[None, None, 6: 54:+1,: ,2:-2 ], d[None, None,-7:-55:-1,: ,2:-2 ]])
-    out= fn_get_output(d_in)
 
-    if 1:
-        output = np.zeros((107, 72, 68, 2), np.uint8)
-        output[-7:-55:-1,: ,2:-2, 0 ][2:-2,2:-2,2:-2] = np.clip(out[1,0] * 256, 0, 255)#* maskL
-        output[6: 54:+1,: ,2:-2, 1 ][2:-2,2:-2,2:-2] = np.clip(out[0,0] * 256, 0, 255) # * maskR
-        outputfn = fn.replace(".nii.gz", "_outseg_L.nii.gz")
-        nibabel.Nifti1Image(output[...,0], img.get_affine()).to_filename(outputfn)
-        outputfn = fn.replace(".nii.gz", "_outseg_R.nii.gz")
-        nibabel.Nifti1Image(output[...,1], img.get_affine()).to_filename(outputfn)
+if __name__ == "__main__":
+    for fn in sys.argv[1:]:
+        print ("Running %s" % (fn))
+        img = nibabel.load(fn)
+        d = img.get_data().astype(np.float32)
+        d -= d.mean()
+        d /= d.std()
+        # split Left and Right (flipping Right)
+        d_in = np.vstack([d[None, None, 6: 54:+1,: ,2:-2 ], d[None, None,-7:-55:-1,: ,2:-2 ]])
+        out= fn_get_output(d_in)
 
-    if 0: # l_output1 (for debugging)
-        output = np.zeros((107, 72, 68, 2), np.uint8)
-        output[-7:-55:-1,: ,2:-2, 0 ][2:-2,2:-2,2:-2] = np.clip(out[1,1] * 256, 0, 255)#* maskL
-        output[6: 54:+1,: ,2:-2, 1 ][2:-2,2:-2,2:-2] = np.clip(out[0,1] * 256, 0, 255) # * maskR
-        outputfn = fn.replace(".nii.gz", "_outseg_output1_L.nii.gz")
-        nibabel.Nifti1Image(output[...,0], img.get_affine()).to_filename(outputfn)
-        outputfn = fn.replace(".nii.gz", "_outseg_output1_R.nii.gz")
-        nibabel.Nifti1Image(output[...,1], img.get_affine()).to_filename(outputfn)
+        if 1:
+            output = np.zeros((107, 72, 68, 2), np.uint8)
+            output[-7:-55:-1,: ,2:-2, 0 ][2:-2,2:-2,2:-2] = np.clip(out[1,0] * 256, 0, 255)#* maskL
+            output[6: 54:+1,: ,2:-2, 1 ][2:-2,2:-2,2:-2] = np.clip(out[0,0] * 256, 0, 255) # * maskR
+            outputfn = fn.replace(".nii.gz", "_outseg_L.nii.gz")
+            nibabel.Nifti1Image(output[...,0], img.get_affine()).to_filename(outputfn)
+            outputfn = fn.replace(".nii.gz", "_outseg_R.nii.gz")
+            nibabel.Nifti1Image(output[...,1], img.get_affine()).to_filename(outputfn)
+
+        if 0: # l_output1 (for debugging)
+            output = np.zeros((107, 72, 68, 2), np.uint8)
+            output[-7:-55:-1,: ,2:-2, 0 ][2:-2,2:-2,2:-2] = np.clip(out[1,1] * 256, 0, 255)#* maskL
+            output[6: 54:+1,: ,2:-2, 1 ][2:-2,2:-2,2:-2] = np.clip(out[0,1] * 256, 0, 255) # * maskR
+            outputfn = fn.replace(".nii.gz", "_outseg_output1_L.nii.gz")
+            nibabel.Nifti1Image(output[...,0], img.get_affine()).to_filename(outputfn)
+            outputfn = fn.replace(".nii.gz", "_outseg_output1_R.nii.gz")
+            nibabel.Nifti1Image(output[...,1], img.get_affine()).to_filename(outputfn)
 
     print("Elapsed: %4.2fs" %  (time.time() - ct))
-    ct = time.time()
