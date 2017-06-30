@@ -5,13 +5,13 @@ This program can quickly segment (<30s) the Hippocampus of a brain T1 image, usi
 
 ![screenshot](blink.gif?raw=True)
 
-A more complete description of the process is coming soon (see also manuscript (*under review*))
+It relies on a Convolutional Neural Network trained on thousands of images from multiple large cohorts, and is therefore quite robust. (see also manuscript (*under review*))
 
 ## Requirement
 *(new)* This program requires Theano >= 0.9.0 and Lasagne
 No GPU is required, as CPU inference is now possible with low speed penalty.
 
-Either the FSL tools or the ANTs tools are also required for the initial low-res registration.
+Either the FSL tools or the ANTs tools are also required for the initial low-res registration. (Or both for improved robustness)
 
 Tested on Linux CentOS 6.8
 
