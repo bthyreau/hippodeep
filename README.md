@@ -20,11 +20,12 @@ Tested on Linux CentOS 6.8
 The code uses the Scipy stack and a recent Theano. It also requires the nibabel library (for nifti loading) and the Lasagne library.
 
 To setup a working FSL environment, download from fMRIB.
+To setup a ANTs environment, get it from http://stnava.github.io/ANTs/ (or alternatively, from a docker container such as http://www.mindboggle.info/ )
 
 The simplest way to install the rest from scratch is to use a Anaconda environment, then
-* install scipy and Theano >=0.9.0
+* install scipy and Theano >=0.9.0 (`conda install theano`)
 * nibabel is available on pip (`pip install nibabel`)
-* Lasagne should be probably pulled from the github repo
+* Lasagne (version >=2.0. If not available, it should be probably pulled from the github repo `pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip`)
 
 
 ## Usage:
