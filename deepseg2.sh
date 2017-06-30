@@ -12,7 +12,6 @@ export THEANO_FLAGS="device=cpu"
 
 echo "Testing python environment"
 python $scriptpath/test_import.py
-echo no check
 if [ $? -eq "1" ]; then
         echo "Failure to load the python Theano/Lasagne environment"
 	    echo "Theano >= 0.9 is required"

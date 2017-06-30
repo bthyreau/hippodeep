@@ -11,9 +11,7 @@ A more complete description of the process is coming soon (see also manuscript (
 *(new)* This program requires Theano >= 0.9.0 and Lasagne
 No GPU is required, as CPU inference is now possible with low speed penalty.
 
-The FSL tools are also required
-
-Optionally, the ANTs warping tools can be used as alternative to the FSL-flirt call.
+Either the FSL tools or the ANTs tools are also required for the initial low-res registration.
 
 Tested on Linux CentOS 6.8
 
@@ -31,7 +29,14 @@ The simplest way to install the rest from scratch is to use a Anaconda environme
 
 ## Usage:
 To use the program, simply
-Using only FSL tools `deepseg3.sh example_brain_t1.nii.gz`, or Using ANTs tools: `deepseg2.sh example_brain_t1.nii.gz`. The script can be called with its full path, but the image file must be in current, writable, directory.
+
+Using ANTs tools: `deepseg2.sh example_brain_t1.nii.gz`.
+
+or, if you want to use the pre-registration from FSL instead:
+
+Using FSL tools `deepseg3.sh example_brain_t1.nii.gz`,
+
+The script can be called with its full path, but the image file must be in current, writable, directory.
 
 The resulting segmentation should be stored as `example_brain_t1_mask_L.nii.gz` (or R for right).
 
