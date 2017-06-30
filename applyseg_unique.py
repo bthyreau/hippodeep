@@ -26,14 +26,8 @@ from lasagne.layers import *
 from lasagne.layers import Layer
 from lasagne.utils import as_tuple
 
-import cPickle
 
-# In production, most of the network definition below is instead loaded from a pickled cache
-pickle_cache_path = os.path.join(os.environ["HOME"], ".hippodeep")
-if not os.path.exists(os.path.join(pickle_cache_path, "output_func.pkl")):
-
-    if not os.path.exists(pickle_cache_path):
-        os.mkdir(pickle_cache_path)
+if 1:
 
     # This broadcast-enabled layer is required to apply a 3d-mask along the feature-dimension
     # From GH PR #633
@@ -191,23 +185,12 @@ if not os.path.exists(os.path.join(pickle_cache_path, "output_func.pkl")):
 
     l_out = ConcatLayer([l_output2, l_output1])
 
-    print ("model defined ")
-
     with np.load(os.path.join(scriptpath, "modelparams.npz")) as f:
         param_values = [f['arr_%d' % i] for i in range(len(f.files))]
         lasagne.layers.set_all_param_values(network, param_values)
-    print ("weights loaded on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
+    #print ("weights loaded on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
 
     fn_get_output = theano.function([l_input.input_var], get_output(l_out, deterministic=True))
-    import theano.misc.pkl_utils
-    print ("Saving function to cache")
-    cPickle.dump(fn_get_output, open(os.path.join(pickle_cache_path, "output_func.pkl"), "wb"))
-
-else:
-    fn_get_output = cPickle.load(open(os.path.join(pickle_cache_path, "output_func.pkl")))
-    print ("weights and functions loaded from cache")
-
-
 
 
 if __name__ == "__main__":

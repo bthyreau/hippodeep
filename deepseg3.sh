@@ -8,18 +8,19 @@ if [ ! -f ${a}.nii.gz ]; then echo "input T1 image must be .nii.gz format"; exit
 which fslmaths
 if [ $? -eq "1" ]; then echo "fsl executable (e.g. fslmaths) not in path"; exit; fi
 
+export THEANO_FLAGS="device=cpu"
+
 echo "Testing python environment"
-echo "(you can edit this script to remove the test if the environment is known)"
 python $scriptpath/test_import.py
 if [ $? -eq "1" ]; then
-        echo "Failure to load the python CUDA/Theano/Lasagne environment"
+        echo "Failure to load the python Theano/Lasagne environment"
+	    echo "Theano >= 0.9 is required"
         echo "python $scriptpath/test_import.py"
         exit
 fi
 
 
 $scriptpath/prerun3.sh $a
-#export THEANO_FLAGS="device=gpu0" # define this THEANO flags to force to use a specific GPU
 python $scriptpath/applyseg_unique.py affcrop_${a}.nii.gz
 $scriptpath/backrun3.sh $a
 

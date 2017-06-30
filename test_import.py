@@ -1,6 +1,6 @@
 import numpy
 import theano
 import lasagne
-from lasagne.layers.dnn import Conv3DDNNLayer
+from lasagne.layers import Conv3DLayer
 import nibabel
 import cPickle
