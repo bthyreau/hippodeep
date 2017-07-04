@@ -13,7 +13,7 @@ No GPU is required, as CPU inference is now possible with low speed penalty.
 
 Either the FSL tools or the ANTs tools are also required for the initial low-res registration. (Or both for improved robustness)
 
-Tested on Linux CentOS 6.8
+Tested on Linux CentOS 6.8 and 7.1
 
 ## Installation
 
@@ -25,7 +25,7 @@ To setup a ANTs environment, get it from http://stnava.github.io/ANTs/ (or alter
 The simplest way to install the rest from scratch is to use a Anaconda environment, then
 * install scipy and Theano >=0.9.0 (`conda install theano`)
 * nibabel is available on pip (`pip install nibabel`)
-* Lasagne (version >=2.0. If not available, it should be probably pulled from the github repo `pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip`)
+* Lasagne (version >=0.2 If not available, it should be probably pulled from the github repo `pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip`)
 
 
 ## Usage:
