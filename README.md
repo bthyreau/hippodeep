@@ -1,11 +1,12 @@
 # hippodeep
 Brain Hippocampus Segmentation
 
-This program can quickly segment (<30s) the Hippocampus of a brain T1 image, using Deep Convolutional NN.
+This program can quickly segment (<30s) the Hippocampus of a brain T1 image.
 
 ![screenshot](blink.gif?raw=True)
 
-It relies on a Convolutional Neural Network trained on thousands of images from multiple large cohorts, and is therefore quite robust. (see also manuscript (*under review*))
+It relies on a Convolutional Neural Network pre-trained on thousands of images from multiple large cohorts, and is therefore quite robust to subject- and MR-contrast variation.
+For more details on how it has been created, refer to the corresponding manuscript at http://dx.doi.org/10.1016/j.media.2017.11.004
 
 ## Requirement
 *(new)* This program requires Theano >= 0.9.0 and Lasagne
