@@ -1,3 +1,4 @@
+export ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=1
 export FSLOUTPUTTYPE=NIFTI_GZ
 
 scriptpath=$(dirname $0)
@@ -33,7 +34,7 @@ fi
 
 antsApplyTransforms -d 3 -i rescaled_${a}.nii -o affcrop_tmp_${subjname}.nii -r $scriptpath/pre_crop.nii.gz -t affine_${subjname}0GenericAffine.mat --float
 #antsRegistrationSyNQuick.sh -f $scriptpath/pre_crop.nii.gz -m affcrop_tmp_${subjname}.nii -o affine2_${subjname} -n 1 -t a -j 1
-antsRegistrationSyNQuick.sh -f $scriptpath/croproi_MNI152_1mm.nii.gz -m affcrop_tmp_${subjname}.nii -o affine2_${subjname} -n 4 -t a -j 1
+antsRegistrationSyNQuick.sh -f $scriptpath/croproi_MNI152_1mm.nii.gz -m affcrop_tmp_${subjname}.nii -o affine2_${subjname} -n 2 -t a -j 1
 antsApplyTransforms -d 3 -i rescaled_${a}.nii -o affcrop_${subjname}.nii.gz -r ${scriptpath}/croproi_MNI152_1mm.nii.gz -t affine2_${subjname}0GenericAffine.mat -t affine_${subjname}0GenericAffine.mat --float
 
 rm r_T1_${subjname}.nii affine_${subjname}Warped.nii.gz affine_${subjname}InverseWarped.nii.gz affcrop_tmp_${subjname}.nii affine2_${subjname}Warped.nii.gz affine2_${subjname}InverseWarped.nii.gz
@@ -59,6 +60,5 @@ echo "Approximate intra-cranial-volume:"
 cat ${a}_eTIV.txt
 echo "(value saved in ${a}_eTIV.txt)"
 echo "you can check the results with:"
-#echo fslview $1 ${a}_mask_L.nii.gz ${a}_mask_R.nii.gz
-echo fslview $pth/$ba $pth/${a}_mask_L.nii.gz $pth/${a}_mask_R.nii.gz
+echo fslview \"$pth/$ba\" \"$pth/${a}_mask_L.nii.gz\" \"$pth/${a}_mask_R.nii.gz\"
 cd -
