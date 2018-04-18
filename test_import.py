@@ -8,5 +8,5 @@ from lasagne.layers import Conv3DLayer
 import nibabel
 
 import sys
-if sys.argv[1] == "with_convaffine":
+if "with_convaffine" in sys.argv:
 	import model_apply_6tissues_mini
