@@ -32,7 +32,11 @@ The simplest way to install the rest from scratch is to use a Anaconda environme
 
 
 ## Usage:
-To use the program, simply run:
+After download, you can run
+
+`./first_run.sh` in the source directory to ensure the environment is ok and to pre-compile the models.
+
+Then, to use the program, simply run:
 
 `deepseg1.sh example_brain_t1.nii.gz`.
 
@@ -40,7 +44,7 @@ The resulting segmentation should be stored as `example_brain_t1_mask_L.nii.gz` 
 
 The volumes values are stored in `example_brain_t1_hippo_vol_LR.txt`, Left then Right, in mm^3. Also, `example_brain_t1_eTIV.txt` has an estimate of the Intracranial-Volume.
 
-*(hint) to concatenate multiple outputs into a table, you can use a bash shell such as `for a in *_hippo_vol_LR.txt ; do cat $a ${a/hippo_vol_LR/eTIV} | xargs echo $a; done` *
+*(hint)* to concatenate multiple outputs into a table, you can use a bash shell such as `for a in *_hippo_vol_LR.txt ; do cat $a ${a/hippo_vol_LR/eTIV} | xargs echo $a; done`
 
 ## Legacy usage:
 Alternatively, if you wish to re-use the same version as described in the manuscript, then you can either run:

@@ -9,4 +9,5 @@ import nibabel
 
 import sys
 if "with_convaffine" in sys.argv:
+	import applyseg_unique
 	import model_apply_6tissues_mini

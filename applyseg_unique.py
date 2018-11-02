@@ -26,8 +26,13 @@ from lasagne.layers import *
 from lasagne.layers import Layer
 from lasagne.utils import as_tuple
 
+import pickle
+import theano.misc.pkl_utils
 
-if 1:
+cachefile = os.path.dirname(os.path.realpath(__file__)) + "/model_hippo.pkl"
+
+if not os.path.exists(cachefile):
+
 
     # This broadcast-enabled layer is required to apply a 3d-mask along the feature-dimension
     # From GH PR #633
@@ -190,7 +195,19 @@ if 1:
         lasagne.layers.set_all_param_values(network, param_values)
     #print ("weights loaded on %s (init took %4.2f sec)" % (time.ctime(), time.time() - ct))
 
+    print("Compiling")
+
     fn_get_output = theano.function([l_input.input_var], get_output(l_out, deterministic=True))
+
+    try:
+        print("Pickling")
+        pickle.dump(fn_get_output, open(cachefile,"wb"))
+    except:
+        print("Pickling failed")
+        pass
+else:
+    print("Loading from cache")
+    fn_get_output = pickle.load(open(cachefile,"rb"))
 
 
 if __name__ == "__main__":
