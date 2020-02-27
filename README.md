@@ -8,6 +8,11 @@ This program can quickly segment (<2min) the Hippocampus of raw brain T1 images.
 It relies on a Convolutional Neural Network pre-trained on thousands of images from multiple large cohorts, and is therefore quite robust to subject- and MR-contrast variation.
 For more details on how it has been created, refer to the corresponding manuscript at http://dx.doi.org/10.1016/j.media.2017.11.004
 
+# Update (2020-01). PyTorch version
+**A PyTorch version** of this program is available at https://github.com/bthyreau/hippodeep_pytorch. It is now recommended to use it instead.
+
+# Older Theano version:
+
 ## Requirement
 *(new)* (Apr 2018) improved the initial registration step, for a low speed penalty
 
